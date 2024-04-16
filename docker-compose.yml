@@ -1,0 +1,40 @@
+version: '3.4'
+networks:
+  dev:
+    driver: bridge
+services:
+  app-api:
+    depends_on:
+     - "app_db"
+    container_name: poker-page-service
+    ports:
+      -  # Removido por motivos de segurança
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=  # Removido por motivos de segurança
+      - ASPNETCORE_URLS=https://+:443
+      - ASPNETCORE_HTTPS_PORT=443
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=   # Removido por motivos de segurança
+      - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=  # Removido por motivos de segurança
+    networks:
+      - dev
+    volumes:
+      - ./Certificates:/Certificates
+  app_db:
+    image: postgres:latest
+    container_name: app_db
+    environment:
+      - POSTGRES_USER= # Removido por motivos de segurança
+      - POSTGRES_PASSWORD= # Removido por motivos de segurança
+      - POSTGRES_DB= # Removido por motivos de segurança
+    ports:
+      -  # Removido por motivos de segurança
+    restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    networks:
+      - dev
+volumes:
+  app_data:
